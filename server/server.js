@@ -15,6 +15,23 @@ app.use(express.static(publicPath)); // This is the middleware
 io.on('connection', (socket) => {
         console.log('New user connected');
 
+        // socket.emit('newEmail', {
+        //    from: 'daniel.zarewych@icloud.com',
+        //    topic: 'Hello',
+        //    body: 'Hey! What is going on? ',
+        //    createAt: 123    
+        // });
+
+        socket.on('createMessage', function(text) {
+                console.log('CreateMessage:', text);
+        
+                socket.emit('newMessage', text);
+        });
+
+        // socket.on('createEmail', (newEmail) => {
+        //         console.log('createEmail', newEmail);
+        // });
+
         socket.on('disconnect', () => {
                 console.log('User was disconnected from server');
         });
