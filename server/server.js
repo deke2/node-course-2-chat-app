@@ -12,14 +12,24 @@ var io = socketIO(server);  // Create the web socket
 
 app.use(express.static(publicPath)); // This is the middleware
 
+// socket.emit <- sends to a single client
+// io.emit <- sends to ALL clients
+// socket.broadcast.emit <- sends to ALL clients except one
+
 io.on('connection', (socket) => {
         console.log('New user connected');
 
-        // socket.emit('newMessage', {
-        //    from: 'daniel.zarewych@icloud.com',
-        //    text: 'Hey! What is going on? ',
-        //    createAt: new Date().getTime()    
-        // });
+        socket.emit('newMessage', {
+           from: 'admin',
+           text: 'Welcome to the chat',
+           createAt: new Date().getTime()    
+        });
+
+        socket.broadcast.emit('newMessage', {
+                from: 'admin',
+                text: 'Yarko has joined the chat.',
+                createAt: new Date().getTime()    
+             });
 
         socket.on('createMessage', (message) => {
                 console.log('CreateMessage:', message);
@@ -28,6 +38,11 @@ io.on('connection', (socket) => {
                         text: message.text,
                         createdAt: new Date().getTime() 
                 });
+                // socket.broadcast.emit('newMessage', {
+                //         from: message.from,
+                //         text: message.text,
+                //         createdAt: new Date().getTime() 
+                // });
         });
 
         socket.on('disconnect', () => {
